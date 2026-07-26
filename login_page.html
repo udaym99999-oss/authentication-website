@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="icon" href="apple.png">
+</head>
+<style>
+.lo1 {
+    width: 100%;
+    text-align: center;
+    margin-top:  25px;
+ }
+.no1 {
+    border-radius: 10px;
+    border-color: brown;
+    width: 80%;
+ }
+</style>
+<body>
+    
+
+    <div class="lo1">
+        <input type="text" id="name1" placeholder="Enter your name">
+        <br>
+        <input type="text" id="email2" placeholder="Enter your email">
+        <br>
+        <input type="text" id="password3" placeholder="password">
+        <br>
+        <button onclick="login()" class="no1">submit</button>
+    </div>
+</body>
+<script>
+    function login() {
+
+    console.log("Button clicked");
+
+    let name = document.getElementById("name1").value;
+    let email = document.getElementById("email2").value;
+    let password = document.getElementById("password3").value;
+
+    console.log(name, email, password);
+
+    fetch("http://127.0.0.1:8000/login",{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        credentials:"include",
+        body:JSON.stringify({
+            name:name,
+            email:email,
+            password:password
+        })
+    })
+    .then(res=>{
+        return res.json();
+    })
+    .then(user=>{
+
+        if(user.status=="success"){
+            window.location.href="Home_page.html";
+        }
+        else{
+            alert("Invalid login");
+        }
+    })
+
+}
+</script>
+</html>

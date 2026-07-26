@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1 id="welcome"></h1>
+    <h1 id="Email"></h1>
+    <p>hello it's your page</p>
+    <div>
+        <button onclick="logout()">logout</button>
+    </div>
+    <div style="margin-top: 25px;">
+        <h2>Edit the details. if you want</h2>
+        <input type="text" id="edits_name" placeholder="edit_name" style="margin-top: 5px;">
+        <br>
+        <input type="text" id="edits_email" placeholder="edit_email" style="margin-top: 15px;">
+        <br>
+        <button onclick="edit()" style="margin-top: 25px; margin-bottom: 15px;">edit the in formation</button>
+    </div>
+
+    <div id="delete" style="padding: 5%;">
+        <h3>"remove your account from datbase"</h3>
+        <button onclick="Delete()">
+            Delete
+        </button>
+    </div>
+
+    <div>
+    <input type="file" id="profile_img" accept="image/*">
+    <br>
+    <button onclick="uploadimage()">upload image</button>
+    <br>
+
+    <img 
+    id="profile_picture"
+    height="200"
+    width="200">
+    </div>
+
+</body>
+<script>
+    //let user = JSON.parse(localStorage.getItem("user"));
+    fetch("http://127.0.0.1:8000/profile", {
+    method: "GET",
+    credentials: "include"
+})
+.then(res => res.json())
+.then(user => { if(user.status =="success"){
+
+    document.getElementById("welcome").innerText =
+        "Welcome: " + user.name;
+
+    document.getElementById("Email").innerText =
+        "Email: " + user.email;
+}
+
+});
+function logout()
+{
+    fetch("http://127.0.0.1:8000/logout",{
+        method:"POST",
+        credentials:"include"
+    })
+    .then(res =>res.json())
+    .then(data =>{
+    if(data.status == "success"){
+        window.location.href="login_page.html"
+    }
+    else{
+        alert("logout failed")
+    }
+    })
+}
+
+function edit(){
+    let name =document.getElementById("edits_name").value;
+    let email =document.getElementById("edits_email").value;
+
+    fetch("http://127.0.0.1:8000/profile",{
+        method:"PUT",
+        credentials:"include",
+        body:JSON.stringify({
+            name:name,
+            email:email
+        })
+    })
+    .then(res => res.text())
+    .then(data =>console.log(data))
+}
+
+function Delete(){
+
+    fetch("http://127.0.0.1:8000/Delete",{
+        method:"Delete",
+        credentials:"include"
+    })
+    .then(res => res.json())
+    .then(data => 
+    {
+        if(data.status == "success")
+        {
+        window.location.href="login_page.html"
+        alert("account delete successfully");
+    }
+    else{
+        alert("account delete failed");
+    }
+})
+}
+
+function uploadimage()
+{
+    let input = document.getElementById("profile_img");
+    let file = input.files[0];
+    let fromData = new FormData();
+
+    if (!file) {
+        console.log("No file selected");
+        return;
+    }
+
+    console.log("Selected file:", file);
+    console.log("File size:", file.size);
+
+    fromData.append("profile-picture",file)
+    for(let pair of fromData.entries()){
+        console.log(pair[0],pair[1]);
+    }
+    fetch("http://127.0.0.1:8000/upload_image",{
+        method:"POST",
+        body: fromData
+    })
+    .then(res => res.text())
+    .then(data => {
+        console.log(data);
+    })
+    .catch(err =>
+    {
+        console.log(err);
+    });
+    
+}
+
+
+</script>
+
+</html>

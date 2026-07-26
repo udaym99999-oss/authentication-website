@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="icon" href="apple.png"> 
+</head>
+<style>
+ .class1 {
+    width: 100%;
+    text-align: center;
+ }
+  .class2 {
+    width: 100%;
+    margin-top:  25px; ;
+    text-align: center;
+ }
+ .but1 {
+    border-radius: 10px;
+    border-color: brown;
+    width: 80%;
+ }
+ .but2 {
+    border-radius: 10px;
+    border-color: brown;
+    width: 80%;
+ }
+</style>
+<body>
+    <div class="class1">
+    <button class="but1" onclick="onroad()">submit</button>
+    </div>
+    <div class="class2">
+        <input type="text" id="name" placeholder="user_name">
+        <br>
+        <input type="text" id="email" placeholder="email">
+        <br>
+        <input type="text" id="password" placeholder="password">
+        <br>     
+        <button class="but2" onclick="oncast()">submit</button>
+    </div>
+</body>
+<script>
+  
+ //"GET" method 
+ function onroad(){
+    fetch("http://localhost:8000")
+    .then(res => res.text())
+    .then(data => alert(data));
+ } 
+
+ // "POST" method
+ function oncast(){
+    let name = document.getElementById("name").value;
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+    fetch("http://localhost:8000/signup",
+        {
+            method:"POST",
+            headers:{"Content-Type":"application/json"}, 
+            body: JSON.stringify({
+                name:name,
+                email:email,
+                password:password
+            })
+        }
+    )
+    .then(res => res.text())
+    .then(data => {
+        if(data.trim() == "Signup Success"){
+            window.location.href="Home_page.html";
+        }
+        else{
+            alert("invalid user_name or password");
+        }
+    });
+ }
+</script>
+</html>
